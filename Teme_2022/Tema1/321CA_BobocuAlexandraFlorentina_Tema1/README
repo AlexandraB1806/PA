@@ -1,0 +1,176 @@
+Bobocu Alexandra-Florentina, 321CA
+
+Ca sursa de inspiratie pentru organizarea codului (ex: clasa Task), am folosit
+scheletul de laborator de pe ocw.
+
+1) Walsh
+
+Am aplicat metoda Divide et Impera: problema cea mare (tabela Walsh) de
+dimensiune n x n am impartit-o in subprobleme mai mici de dimensiune
+n/2 x n/2. In cazul de baza, matricea este de dimensiune 1 x 1 si acel
+element este intotdeauna 0. In functie de cadrane, decid sau nu daca
+neg valoarea returnata: in cazul cadranelor 1, 2 sau 3, doar apelez
+recursiv functia get_value() pe parametrii alesi corespunzator:
+n actualizat la noua dimensiune n / 2, indicii actualizati in functie
+de cadran. In cazul cadranului 4, neg valoarea intoarsa de get_value().
+
+Complexitati:
+- Temporala:
+    -> Avem log n apeluri recursive pentru o pereche, dar avem k perechi
+       de numere in total.
+Deci: T = O(k * log n);
+- Spatiala:
+    -> Am declarat doar variabile auxiliare: O(1)
+    -> Apeland recursiv functia insa, as avea (k * log n) apeluri recursive
+       pe stiva pentru cele k perechi citite.
+Deci: S = O(k * log n).
+
+2) Statistics
+
+Fiecare cuvant din lista data are caracteristica o structura,
+Gigel_word, ce retine lungimea fiecarui cuvant si numarul de aparitii
+ale unei anumite litere.
+Am aplicat metoda Greedy pe fiecare litera mica din alfabetul englez.
+Astfel, voi crea un vector de structuri, ce retine pentru fiecare cuvant in
+parte, informatii necesare unei sortari corespunzatoare: lungimea cuvantului,
+dar si frecventa literei curente in acest cuvant. Am ales criteriul de sortare
+al acestui vector de structuri asociat listei de cuvinte pe baza numarului de
+aparitii al literei dominante raportat la lungimea cuvantului.
+Initializez separat o variabila auxiliara de tip Gigel_word.
+Voi parcurge vectorul sortat, si folosindu-ma de variabila auxiliara, voi
+"concatena" cuvintele din lista de cuvinte, in sensul ca voi mentine de
+fiecare data ce lungime are noul cuvant rezultat in urma concatenarii, dar
+si ce frecventa are litera aleasa ca fiind dominanta, fara a concatena
+propriu-zis cuvintele din lista de cuvinte. Daca litera este inca cea
+dominanta, atunci cuvantul este unul potrivit si il iau in considerare.
+La final, voi retine numarul maxim de cuvinte ce respecta conditia.
+
+Complexitati:
+- Temporala:
+    -> Parcurgerea literelor mici din alfabetul englez: constanta;
+    -> Parcurgerea listei de cuvinte + calculul numarului de aparitii
+       al literei in cuvant: O(L);
+    -> Sortarea vectorului de structuri: O(n * log n);
+    -> Iterarea prin vectorul sortat: O(n).
+Deci: T = O(n * log n + L).
+- Spatiala:
+    -> Retinerea unui vector de structuri: O(n);
+    -> Retinerea unui vector de cuvinte: O(L).
+Deci: S = O(n + L).
+
+
+3) Prinel
+
+Am aplicat de 2 ori tehnica Programarii Dinamice, o data pentru construirea
+vectorului all_operations[] in care retin, pentru fiecare valoare ce ar putea
+aparea in vectorul target, numarul de operatii necesare ajungerii la valoarea
+respectiva, si o data pentru implementarea Problemei Rucsacului, cand nu se ia
+in considerare posibilitatea taierii obiectelor.
+
+Am observat ca suma maxima pana la un element din vectorul target[] este 24, si
+cum avem MAX_N = 1000 de numere cu costul 24, iar valoarea lui k ar depasi
+24000, atunci calculez suma tuturor profitelor, deci nu mai calculez dinamic
+acel profit. Am facut aceasta verificare pentru k inca de la citirea datelor, 
+
+Realizez o functie auxiliara calculate_divisors(), in cadrul careia construiesc
+un vector ce retine divizorii unui anumit numar, fara a-l include pe el insusi.
+
+In functia get_num_operations(), pentru fiecare valoare posibila din vectorul
+target (de la 1 pana la 10^5), voi retine numarul optim de operatii necesar sa
+se ajunga de la valoarea initiala 1 pana la cea existenta in target.
+Pentru cazul de baza, am considerat ca numarul de operatii necesar ajungerii la
+valoarea 1 este 0 (parctic nu fac nicio operatie). In pasul de inductie,
+parcurg toate valorile posibile ale vectorului target[] si pentru fiecare
+valoare posibila, creez vectorul de divizori asociat. Pentru fiecare divizor in
+parte, verific daca divizorul curent contribuie la obtinerea unui numar minim
+de operatii pana la tinta. Pentru obtinerea minimului, ma bazez pe valorile
+anterioare din vectorul all_operations[].
+
+In functia get_max_points(), completez corespunzator vectorul operations[] si
+aplic Problema Rucsacului intre vectorul de punctaje p[] si vectorul
+operations[].
+
+Complexitati:
+- Tempoarala:
+    -> calculate_divisors(): Parcurgerea divizorilor posibili in O(sqrt(n));
+    -> get_num_operations(): O(10^5 * divisors.size());
+    -> knapsack(): O(n * k) <=> O(10^9)
+Deci: T = O(n * k) = O(10^9).
+- Spatiala:
+    -> Am declarat 5 vectori aditionali, dimensiunea cea mai mare fiind O(10^6).
+Deci: S = O(10^6).
+
+4) Crypto
+
+Am aplicat Tehnica Programarii Dinamice.
+
+Construiesc un vector de frecventa, in care pentru fiecare litera din alfabet,
+voi marca numarul de aparitii ale acelei litere in subsirul s. Voi itera prin
+acest vector de frecventa si voi calcula numarul de litere ce difera intre ele
+intr-un sir de caractere, astfel ca in momentul in care numarul de aparitii ale
+unei litere este nenul in vectorul de frecventa, stiu ca acea litera a aparut
+cel putin o data, deci incrementez num_different_characters.
+
+Voi crea o matrice dp cu l linii si n coloane, unde un element de pe linia i si
+coloana j semnifica numarul de aparitii ale subsirului s in cheia k.
+Pentru fiecare linie in parte din matrice, asociez cate i caractere din
+subsirul s, iar la fiecare pas, pe masura ce avansez in matrice pe linii, o sa
+fie de interes ultima litera din subsirul s, nu si cele anterioare, deoarece pe
+nivelele superioare din matrice, am calculat deja numarul de aparitii ale
+subsirului in cheie, astfel evit numararea aceleiasi litere de 2 ori.
+
+* Pentru cazurile de baza ale recurentei alese:
+I) In primul rand, voi completa prima coloana din matrice astfel:
+    1) Daca intalnesc un semn de intrebare (deci poate fi orice caracter pus
+in locul lui) sau intalnesc chiar caracterul din cheie, atunci marchez cu 1
+acel element din matrice.
+    2) Daca caracterul din subsir nu coincide cu cel din cheie, atunci
+marchez elementul din matrice cu 0.
+
+II) In al doilea rand, voi completa prima linie din matrice (de la a doua
+pozitie incolo) astfel:
+    1) Daca intalnesc semnul intrebarii:
+    - O sa inmultesc numarul de caractere ce difera intre ele in subsirul s
+(calculat la inceput - ramane acelasi) cu numarul de caractere calculat
+anterior din cazul de baza. In acest mod, tin cont de caracterele relevante
+din subsir (cele care nu se repeta), dar si de posibilitatile calculate la
+pasul anterior;
+    - Calculez si num_different_characters la puterea numarului precedent
+de semne se intrebare, adica numarul curent de semne de intrebare intalnite.
+    Adun aceste valori, pentru a obtine toate variantele de caractere ce ar
+putea lua locul semnului intrebarii.
+    2) Daca intalnesc in cheie caracterul din subsir:
+    - Adun numarul de posibilitati calculat la pasul anterior cu 
+num_different_characters ^ num_asking_mark, pentru a lua in
+considerare inlocuirile posibile ale semnului intrebarii.
+    3) Daca nu intalnesc in cheie caracterul din subsir:
+    - Doar completez in matrice numarul de posibilitati calculat anterior.
+
+* Pentru cazul general - ma voi folosi de prima linie si prima coloana ce
+tocmai au fost completate astfel:
+    1) Daca intalnesc semnul intrebarii:
+        - Asemanator ca in cazul de baza, doar ca la produsul dintre numarul
+de caractere diferite din s si numarul de caractere calculat anterior, se
+adauga elementul de pe linia si coloana anterioare, deoarece acolo am
+calculat posibilitatile de aparitie ale caracterului anterior din s.
+    2) Daca intalnesc in cheie caracterul din subsir:
+        - Adun numarul de caractere calculate pentru litera anterioara
+caracterului meu cu numarul precedent de caractere.
+    2) Daca nu intalnesc in cheie caracterul din subsir:
+        - Doar completez in matrice numarul de posibilitati calculat anterior.
+
+Complexitati:
+- Temporala:
+    -> Parcurgerea sirului s: O(l)
+    -> Parcurgerea vectorului de frecventa: O(MAX_LETTERS) - constant
+    -> Parcurgerea matricei dp: O(l * n)
+Deci: T = O(l * n);
+- Spatiala:
+    -> Retinerea matricei dp: O(l * n)
+    -> Retinerea vectorului de frecventa: O(MAX_LETTERS) - constant
+Deci: S = O(l * n).
+
+
+Referinte:
+- Pentru implementarea Problemei Rucsacului, am consultat link-ul:
+https://codeforces.com/blog/entry/63323

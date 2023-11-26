@@ -1,0 +1,62 @@
+Bobocu Alexandra-Florentina, 321CA
+
+Ca sursa de inspiratie pentru organizarea codului (ex: clasa Task), am folosit
+scheletul de laborator de pe ocw.
+
+2) Fortificatii
+
+Voi aplica o singura data algoritmul lui Dijkstra din nodul sursa, reprezentat
+de capitala imperiului, pentru a afla toate distantele minime de la nodul 1
+catre toate celelealte noduri din imperiu; distantele pana la barbari le vom
+lasa momentan setate pe INF. Aceasta strategie este utila deoarece distantele
+intre 2 noduri care fac parte din imperiu nu pot fi imbunatatite, doar cele
+intre un nod ce face parte din imperiu si un nod barbar. Voi construi un vector
+auxiliar enemies in care pentru fiecare nod, il marchez inca de la citire cu
+true daca este barbar si cu false daca face parte din imperiu.
+Parcurg pe rand fiecare nod din graf. Construiesc un nou vector auxiliar
+distances in care pentru fiecare nod barbar, voi retine toate distantele
+posibile catre capitala, nu doar distanta minima. In acest sens, voi calcula
+distantele pana la nodurile barbare. Astfel, verific ca nodul curent sa faca
+parte din imperiu si nodul urmator sa fie barbar, iar distanta pana la nodul
+barbar este de fapt distanta pana la nodul din imperiu (calculata deja cu
+algoritmul lui Dijkstra) si costul muchiei de la nodul din imperiu pana la
+nodul barbar.
+Dupa ce am populat vectorul de distante, il voi sorta crescator. Voi aplica
+o tactica de tip Greedy, in care incerc sa maresc valoarea nodului curent ca
+sa ajunga sa fie cel mult egala cu valoarea nodului urmator.
+Voi tine separat un contor, care imi indica cate elemente de aceeasi valoare
+exista in vectorul distances. Deoarece incep iterarea in acest vector inca de
+la primul element, voi initializa contorul cu 1.
+Catul impartirii numarului de fortificatii disponibile la numarul de distante
+egale indica cu cat putem creste valoarea unei distante ca sa o putem aduce
+la o valoare cat mai mare, care sa nu depaseasca urmatoarea distanta din
+vectorul distances. Analog, diff indica cat ne trebuie exact sa adaugam la
+o distanta ca sa ajungem la valoarea celei care urmeaza. Distantei curente ii
+se va adauga minimul dintre quotient si diff, pentru a ajunge la o valoare
+cel mult egala cu cea a urmatoarei distante. Numarul de fortificatii k se va
+actualiza astfel incat sa consideram ca s-au actualizat toate distantele
+existente pana in distanta care urmeaza cu valoarea asteptata. Din acest motiv,
+inmultim cu numarul de distante egale valoarea cu care am marit acele distante.
+In momentul in care nu pot actualiza simultan distantele ca sa ajunga la
+valoarea celei care urmeaza, voi returna distanta curenta, deoarece aceea imi
+indica timpul minim in care barbarii pot ajunge in capitala.
+Daca dupa ce am iterat prin toate distantele, acestea au ajuns sa fie
+maximizate pe cat posibil, dar totusi au mai ramas fortificatii de pus, voi
+distribui in mod egal la fiecare distanta numarul maxim posibil de fortificatii
+ce pot fi puse astfel incat sa ii incetinim pe barbari.
+Voi returna distanta de pe ultima pozitie din vectorul distances.
+
+Complexitati:
+- Temporala:
+    -> O singura parcurgere cu algoritmul lui Dijkstra: O(m * log n);
+    -> Parcurgerea nodurilor si a muchiilor fiecarui nod: O(n * m);
+    -> Sortarea vectorului distances: O(m * log m);
+    -> Parcurgerea vectorul distances: O(m).
+Deci: T = O(n * m);
+- Spatiala:
+    -> Algoritmul lui Dijkstra: O(n);
+    -> Lista de adiacenta: O(n * m);
+    -> Vectorul de bool enemies: O(n);
+    -> Vectorul distances: O(m);
+    -> Vectorul d: O(n).
+Deci: S = O(n * m).
